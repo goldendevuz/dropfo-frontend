@@ -7,7 +7,8 @@ import {
   AlertCircle, 
   RefreshCw,
   File,
-  Folder
+  Folder,
+  Download
 } from 'lucide-react';
 import { UploadFile } from '@/types/upload';
 
@@ -25,6 +26,21 @@ const formatSize = (bytes: number): string => {
   const sizes = ['B', 'KB', 'MB', 'GB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
+
+const formatSpeed = (bytesPerSecond: number): string => {
+  if (bytesPerSecond === 0) return '0 B/s';
+  const k = 1024;
+  const sizes = ['B/s', 'KB/s', 'MB/s', 'GB/s'];
+  const i = Math.floor(Math.log(bytesPerSecond) / Math.log(k));
+  return parseFloat((bytesPerSecond / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+};
+
+const formatTime = (seconds: number): string => {
+  if (seconds === 0 || !isFinite(seconds)) return '--';
+  if (seconds < 60) return `${Math.round(seconds)}s`;
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ${Math.round(seconds % 60)}s`;
+  return `${Math.floor(seconds / 3600)}h ${Math.floor((seconds % 3600) / 60)}m`;
 };
 
 export const FileProgress: React.FC<FileProgressProps> = ({
@@ -63,14 +79,25 @@ export const FileProgress: React.FC<FileProgressProps> = ({
       );
     }
     return (
-      <div className="p-2 rounded-full bg-primary/10">
+      <div className="p-2 rounded-full bg-muted">
         {file.path ? (
-          <Folder className="w-4 h-4 text-primary" />
+          <Folder className="w-4 h-4 text-muted-foreground" />
         ) : (
-          <File className="w-4 h-4 text-primary" />
+          <File className="w-4 h-4 text-muted-foreground" />
         )}
       </div>
     );
+  };
+
+  const handleDownload = () => {
+    if (file.url) {
+      const a = document.createElement('a');
+      a.href = file.url;
+      a.download = file.name;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
   };
 
   return (
@@ -110,13 +137,25 @@ export const FileProgress: React.FC<FileProgressProps> = ({
           </div>
           
           <div className="flex items-center justify-between mt-1">
-            <span className="text-xs text-muted-foreground">
-              {isCompleted && 'Completed'}
-              {isPaused && 'Paused'}
-              {isUploading && 'Uploading...'}
-              {isQueued && 'Queued'}
-              {isError && (file.error || 'Upload failed')}
-            </span>
+            <div className="flex items-center gap-3">
+              <span className="text-xs text-muted-foreground">
+                {isCompleted && 'Completed'}
+                {isPaused && 'Paused'}
+                {isUploading && 'Uploading...'}
+                {isQueued && 'Queued'}
+                {isError && (file.error || 'Upload failed')}
+              </span>
+              {isUploading && file.speed > 0 && (
+                <span className="text-xs font-medium text-primary">
+                  {formatSpeed(file.speed)}
+                </span>
+              )}
+              {isUploading && file.eta > 0 && (
+                <span className="text-xs text-muted-foreground">
+                  ETA: {formatTime(file.eta)}
+                </span>
+              )}
+            </div>
             <span className="text-xs font-medium text-foreground">
               {file.progress}%
             </span>
@@ -125,6 +164,16 @@ export const FileProgress: React.FC<FileProgressProps> = ({
 
         {/* Action Buttons */}
         <div className="flex items-center gap-1">
+          {isCompleted && file.url && (
+            <button
+              onClick={handleDownload}
+              className="p-2 rounded-lg hover:bg-success/10 transition-colors"
+              title="Download"
+            >
+              <Download className="w-4 h-4 text-success" />
+            </button>
+          )}
+          
           {(isUploading || isPaused) && (
             <button
               onClick={isPaused ? onResume : onPause}

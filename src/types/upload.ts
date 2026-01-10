@@ -10,4 +10,7 @@ export interface UploadFile {
   path?: string; // For folder uploads
   uploadedBytes: number;
   error?: string;
+  speed: number; // bytes per second
+  eta: number; // seconds remaining
+  url?: string; // download URL after completion
 }

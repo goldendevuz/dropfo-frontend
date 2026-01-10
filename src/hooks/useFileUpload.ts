@@ -9,6 +9,7 @@ const UPLOAD_SPEED = 500; // ms per chunk (simulated)
 export const useFileUpload = () => {
   const [files, setFiles] = useState<UploadFile[]>([]);
   const uploadControllers = useRef<Map<string, { paused: boolean; cancelled: boolean }>>(new Map());
+  const speedTrackers = useRef<Map<string, { lastBytes: number; lastTime: number }>>(new Map());
 
   const addFiles = useCallback((newFiles: FileList | File[]) => {
     const fileArray = Array.from(newFiles);
@@ -26,6 +27,8 @@ export const useFileUpload = () => {
         status: 'queued' as UploadStatus,
         path,
         uploadedBytes: 0,
+        speed: 0,
+        eta: 0,
       };
     });
 
@@ -40,10 +43,11 @@ export const useFileUpload = () => {
   const simulateUpload = useCallback(async (fileId: string) => {
     const controller = { paused: false, cancelled: false };
     uploadControllers.current.set(fileId, controller);
+    speedTrackers.current.set(fileId, { lastBytes: 0, lastTime: Date.now() });
 
     setFiles((prev) =>
       prev.map((f) =>
-        f.id === fileId ? { ...f, status: 'uploading' as UploadStatus } : f
+        f.id === fileId ? { ...f, status: 'uploading' as UploadStatus, speed: 0, eta: 0 } : f
       )
     );
 
@@ -75,25 +79,44 @@ export const useFileUpload = () => {
       uploadedBytes = Math.min((chunk + 1) * CHUNK_SIZE, totalBytes);
       const progress = Math.round((uploadedBytes / totalBytes) * 100);
 
+      // Calculate speed and ETA
+      const tracker = speedTrackers.current.get(fileId);
+      const now = Date.now();
+      let speed = 0;
+      let eta = 0;
+      
+      if (tracker) {
+        const timeDiff = (now - tracker.lastTime) / 1000; // seconds
+        const bytesDiff = uploadedBytes - tracker.lastBytes;
+        speed = timeDiff > 0 ? bytesDiff / timeDiff : 0;
+        const remainingBytes = totalBytes - uploadedBytes;
+        eta = speed > 0 ? remainingBytes / speed : 0;
+        
+        speedTrackers.current.set(fileId, { lastBytes: uploadedBytes, lastTime: now });
+      }
+
       setFiles((prev) =>
         prev.map((f) =>
           f.id === fileId
-            ? { ...f, progress, uploadedBytes, status: 'uploading' as UploadStatus }
+            ? { ...f, progress, uploadedBytes, status: 'uploading' as UploadStatus, speed, eta }
             : f
         )
       );
     }
 
-    // Mark as completed
+    // Mark as completed and create download URL
     setFiles((prev) =>
-      prev.map((f) =>
-        f.id === fileId
-          ? { ...f, progress: 100, status: 'completed' as UploadStatus }
-          : f
-      )
+      prev.map((f) => {
+        if (f.id === fileId) {
+          const url = URL.createObjectURL(f.file);
+          return { ...f, progress: 100, status: 'completed' as UploadStatus, speed: 0, eta: 0, url };
+        }
+        return f;
+      })
     );
 
     uploadControllers.current.delete(fileId);
+    speedTrackers.current.delete(fileId);
   }, [files]);
 
   const startUpload = useCallback((fileId: string) => {
@@ -150,7 +173,7 @@ export const useFileUpload = () => {
     setFiles((prev) =>
       prev.map((f) =>
         f.id === fileId
-          ? { ...f, status: 'queued' as UploadStatus, progress: 0, uploadedBytes: 0, error: undefined }
+          ? { ...f, status: 'queued' as UploadStatus, progress: 0, uploadedBytes: 0, error: undefined, speed: 0, eta: 0 }
           : f
       )
     );
