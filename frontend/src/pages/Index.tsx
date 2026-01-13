@@ -32,6 +32,7 @@ const Index = () => {
     error: filesError,
     fetchFiles,
     downloadFile,
+    deleteFile,
     getStreamUrl,
     getDownloadUrl,
   } = useUploadedFiles();
@@ -157,6 +158,7 @@ const Index = () => {
             error={filesError}
             onRefresh={fetchFiles}
             onDownload={downloadFile}
+            onDelete={deleteFile}
             getStreamUrl={getStreamUrl}
             getDownloadUrl={getDownloadUrl}
           />

@@ -66,6 +66,7 @@ open http://localhost:8080
 | `/files/` | POST | tus upload endpoint |
 | `/api/files` | GET | List uploaded files |
 | `/api/files/{id}` | GET | Download file |
+| `/api/files/{id}` | DELETE | Delete file |
 | `/api/stream/{id}` | GET | Stream file (supports range requests) |
 
 ## Development

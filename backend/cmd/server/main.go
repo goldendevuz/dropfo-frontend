@@ -59,7 +59,16 @@ func main() {
 
 	// Custom API endpoints
 	mux.HandleFunc("/api/files", fileHandler.ListFiles)
-	mux.HandleFunc("/api/files/", fileHandler.DownloadFile)
+	mux.HandleFunc("/api/files/", func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case http.MethodGet:
+			fileHandler.DownloadFile(w, r)
+		case http.MethodDelete:
+			fileHandler.DeleteFile(w, r)
+		default:
+			http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		}
+	})
 	mux.HandleFunc("/api/stream/", fileHandler.StreamFile)
 
 	// Health check

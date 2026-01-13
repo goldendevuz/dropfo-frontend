@@ -274,6 +274,47 @@ func (h *FileHandler) StreamFile(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// DeleteFile removes a file and its metadata
+func (h *FileHandler) DeleteFile(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	// Extract ID from path: /api/files/{id}
+	id := strings.TrimPrefix(r.URL.Path, "/api/files/")
+	if id == "" {
+		http.Error(w, "File ID required", http.StatusBadRequest)
+		return
+	}
+
+	// Validate ID to prevent path traversal
+	if strings.Contains(id, "/") || strings.Contains(id, "..") {
+		http.Error(w, "Invalid file ID", http.StatusBadRequest)
+		return
+	}
+
+	filePath := filepath.Join(h.uploadDir, id)
+	infoPath := filepath.Join(h.uploadDir, id+".info")
+
+	// Check if file exists
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		http.Error(w, "File not found", http.StatusNotFound)
+		return
+	}
+
+	// Remove the data file
+	if err := os.Remove(filePath); err != nil {
+		http.Error(w, "Failed to delete file", http.StatusInternalServerError)
+		return
+	}
+
+	// Remove the info file (ignore error if it doesn't exist)
+	os.Remove(infoPath)
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
 // readTusInfo reads and parses a .info file
 func (h *FileHandler) readTusInfo(path string) (*TusInfo, error) {
 	data, err := os.ReadFile(path)
