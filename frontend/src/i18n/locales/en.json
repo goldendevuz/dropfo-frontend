@@ -1,0 +1,78 @@
+{
+  "app": {
+    "title": "File Uploader",
+    "description": "Upload files and folders with ease. Track progress, pause, and resume uploads anytime."
+  },
+  "nav": {
+    "upload": "Upload Files",
+    "viewUploaded": "View Uploaded"
+  },
+  "dropzone": {
+    "title": "Drop files here",
+    "subtitle": "or click to select",
+    "selectFiles": "Select Files",
+    "selectFolder": "Select Folder"
+  },
+  "fileList": {
+    "title": "Upload Queue",
+    "files": "files",
+    "overallProgress": "Overall Progress",
+    "pauseAll": "Pause All",
+    "resumeAll": "Resume All",
+    "clearCompleted": "Clear Completed"
+  },
+  "fileProgress": {
+    "queued": "Queued",
+    "uploading": "Uploading...",
+    "paused": "Paused",
+    "completed": "Completed",
+    "error": "Error",
+    "uploadFailed": "Upload failed",
+    "speed": "Speed",
+    "eta": "ETA",
+    "of": "of"
+  },
+  "actions": {
+    "pause": "Pause",
+    "resume": "Resume",
+    "cancel": "Cancel",
+    "retry": "Retry",
+    "remove": "Remove",
+    "delete": "Delete",
+    "download": "Download",
+    "preview": "Preview",
+    "refresh": "Refresh",
+    "fullscreen": "Fullscreen"
+  },
+  "uploadedFiles": {
+    "title": "Uploaded Files",
+    "filesOnServer": "files on server",
+    "noFiles": "No files uploaded yet",
+    "noFilesDesc": "Upload some files to see them here",
+    "loading": "Loading files..."
+  },
+  "mediaPlayer": {
+    "previewNotAvailable": "Preview not available",
+    "previewNotAvailableDesc": "This file type cannot be previewed in the browser.",
+    "downloadFile": "Download File"
+  },
+  "features": {
+    "folderSupport": {
+      "title": "Folder Support",
+      "description": "Upload entire folders with directory structure preserved"
+    },
+    "pauseResume": {
+      "title": "Pause & Resume",
+      "description": "Control uploads with pause and resume functionality"
+    },
+    "progressTracking": {
+      "title": "Progress Tracking",
+      "description": "Real-time progress bars for each file upload"
+    }
+  },
+  "language": {
+    "uz": "Uzbek",
+    "ru": "Russian",
+    "en": "English"
+  }
+}

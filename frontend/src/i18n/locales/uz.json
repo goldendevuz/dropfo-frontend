@@ -1,0 +1,78 @@
+{
+  "app": {
+    "title": "Fayl Yuklash",
+    "description": "Fayllar va papkalarni oson yuklang. Jarayonni kuzating, to'xtating va davom ettiring."
+  },
+  "nav": {
+    "upload": "Fayl yuklash",
+    "viewUploaded": "Yuklangan fayllar"
+  },
+  "dropzone": {
+    "title": "Fayllarni shu yerga tashlang",
+    "subtitle": "yoki tanlash uchun bosing",
+    "selectFiles": "Fayllarni tanlash",
+    "selectFolder": "Papkani tanlash"
+  },
+  "fileList": {
+    "title": "Yuklash navbati",
+    "files": "ta fayl",
+    "overallProgress": "Umumiy jarayon",
+    "pauseAll": "Barchasini to'xtatish",
+    "resumeAll": "Barchasini davom ettirish",
+    "clearCompleted": "Tugallanganlarni tozalash"
+  },
+  "fileProgress": {
+    "queued": "Navbatda",
+    "uploading": "Yuklanmoqda...",
+    "paused": "To'xtatilgan",
+    "completed": "Yuklandi",
+    "error": "Xatolik",
+    "uploadFailed": "Yuklash muvaffaqiyatsiz",
+    "speed": "Tezlik",
+    "eta": "Qolgan vaqt",
+    "of": "dan"
+  },
+  "actions": {
+    "pause": "To'xtatish",
+    "resume": "Davom ettirish",
+    "cancel": "Bekor qilish",
+    "retry": "Qayta urinish",
+    "remove": "O'chirish",
+    "delete": "O'chirish",
+    "download": "Yuklab olish",
+    "preview": "Ko'rish",
+    "refresh": "Yangilash",
+    "fullscreen": "To'liq ekran"
+  },
+  "uploadedFiles": {
+    "title": "Yuklangan fayllar",
+    "filesOnServer": "ta fayl serverda",
+    "noFiles": "Hali fayllar yuklanmagan",
+    "noFilesDesc": "Fayllarni bu yerda ko'rish uchun yuklang",
+    "loading": "Fayllar yuklanmoqda..."
+  },
+  "mediaPlayer": {
+    "previewNotAvailable": "Ko'rib bo'lmaydi",
+    "previewNotAvailableDesc": "Bu fayl turini brauzerda ko'rib bo'lmaydi.",
+    "downloadFile": "Faylni yuklab olish"
+  },
+  "features": {
+    "folderSupport": {
+      "title": "Papka qo'llab-quvvatlash",
+      "description": "Papka tuzilishi saqlanib, butun papkalarni yuklang"
+    },
+    "pauseResume": {
+      "title": "To'xtatish va davom ettirish",
+      "description": "Yuklashlarni to'xtatish va davom ettirish imkoniyati"
+    },
+    "progressTracking": {
+      "title": "Jarayonni kuzatish",
+      "description": "Har bir fayl uchun real vaqtda jarayon ko'rsatkichi"
+    }
+  },
+  "language": {
+    "uz": "O'zbekcha",
+    "ru": "Ruscha",
+    "en": "Inglizcha"
+  }
+}
