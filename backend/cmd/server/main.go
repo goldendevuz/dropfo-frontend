@@ -31,7 +31,7 @@ func main() {
 
 	// Configure tusd handler
 	tusConfig := tusd.Config{
-		BasePath:                "/files/",
+		BasePath:                "/api/uploads/",
 		StoreComposer:           composer,
 		NotifyCompleteUploads:   true,
 		NotifyCreatedUploads:    true,
@@ -53,9 +53,9 @@ func main() {
 	// Set up routes
 	mux := http.NewServeMux()
 
-	// Mount tusd handler at /files/
-	mux.Handle("/files/", http.StripPrefix("/files/", tusHandler))
-	mux.Handle("/files", http.StripPrefix("/files", tusHandler))
+	// Mount tusd handler at /api/uploads/
+	mux.Handle("/api/uploads/", http.StripPrefix("/api/uploads/", tusHandler))
+	mux.Handle("/api/uploads", http.StripPrefix("/api/uploads", tusHandler))
 
 	// Custom API endpoints
 	mux.HandleFunc("/api/files", fileHandler.ListFiles)
@@ -81,7 +81,7 @@ func main() {
 
 	log.Printf("=== Drop Go Files Server ===")
 	log.Printf("Upload directory: %s", absUploadDir)
-	log.Printf("tus endpoint: http://localhost:%s/files/", port)
+	log.Printf("TUS endpoint: http://localhost:%s/api/uploads/", port)
 	log.Printf("API endpoint: http://localhost:%s/api/", port)
 	log.Printf("Server starting on :%s", port)
 

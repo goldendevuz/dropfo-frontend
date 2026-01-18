@@ -2,17 +2,8 @@ import { useState, useCallback, useRef } from 'react';
 import * as tus from 'tus-js-client';
 import { UploadFile, UploadStatus } from '@/types/upload';
 
-// Use window.location to determine the backend URL
-const getBackendUrl = () => {
-  if (typeof window !== 'undefined') {
-    const hostname = window.location.hostname;
-    return `http://${hostname}`;
-  }
-  return 'http://localhost:1080';
-};
-
-const TUS_ENDPOINT = `${getBackendUrl()}/files`;
-const API_ENDPOINT = `${getBackendUrl()}/api`;
+const TUS_ENDPOINT = '/api/uploads/';
+const API_ENDPOINT = '/api';
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5MB chunks
 
 const generateId = () => Math.random().toString(36).substring(2, 15);
@@ -111,9 +102,13 @@ export const useFileUpload = () => {
 
       // Check for previous uploads (resume support)
       upload.findPreviousUploads().then((previousUploads) => {
-        if (previousUploads.length > 0) {
-          // Resume from last attempt
-          upload.resumeFromPreviousUpload(previousUploads[0]);
+        // Filter to only resume uploads matching current protocol
+        const currentProtocol = window.location.protocol;
+        const validUploads = previousUploads.filter(
+          (prev) => prev.uploadUrl?.startsWith(currentProtocol)
+        );
+        if (validUploads.length > 0) {
+          upload.resumeFromPreviousUpload(validUploads[0]);
         }
         upload.start();
       });
